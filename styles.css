@@ -1,4 +1,4 @@
-.h5{
+/*.h5{
   font-weight: normal;
 }
 #dropzone {
@@ -16,13 +16,12 @@
   width: 1200px;
   height: 700px;
   text-align: center;
-/*  padding: 20px;*/
+  padding: 20px;
   font-size: 18px;
   margin: 0 auto;
 }
 #upload-btn {
   text-align: center;
-/*  display: none;*/
   size: 600px;
   padding: 10px 20px;
   background-color: #B89A42;
@@ -58,4 +57,4 @@ body{
   background: -moz-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: -webkit-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: linear-gradient(to bottom, #B89A42 0%, #E6C153 100%);
-}
+}*/
