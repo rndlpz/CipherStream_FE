@@ -1,4 +1,4 @@
-/*.h5{
+.h5{
   font-weight: normal;
 }
 #dropzone {
@@ -57,4 +57,4 @@ body{
   background: -moz-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: -webkit-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: linear-gradient(to bottom, #B89A42 0%, #E6C153 100%);
-}*/
+}
