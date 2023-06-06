@@ -77,18 +77,20 @@ async function send_file(conn, file) {
     let metadataEncrypted = await crypto.subtle.encrypt(
         { name: 'AES-GCM', iv: metadataIV },
         key,
-        '0' + JSON.stringify(metadata)
+        await new Blob(['0', JSON.stringify(metadata)]).arrayBuffer()
     );
 
     await conn.ws.send(new Blob([metadataIV, metadataEncrypted]));
 
     for (let i = 0; i < file.size; i += chunkSize) {
+        let offset = new DataView(new ArrayBuffer(8));
+        offset.setBigInt64(0, BigInt(i), true);
         let chunk = file.slice(i, i + chunkSize);
         let iv = crypto.getRandomValues(new Uint8Array(12));
         let encrypted = await crypto.subtle.encrypt(
             { name: 'AES-GCM', iv: iv },
             key,
-            new Blob(['1', fileUUID, await chunk.arrayBuffer()])
+            await new Blob(['1', fileUUID, offset.buffer, await chunk.arrayBuffer()]).arrayBuffer()
         );
 
         // JSON is bloat
@@ -112,15 +114,72 @@ async function sender() {
 
 async function receiver() {
     let params = new URLSearchParams(location.search);
-    console.log(location.search);
     let sid = params.get('sid');
     let jwk = JSON.parse(atob(location.hash.substring(1)));
     let key = await crypto.subtle.importKey('jwk', jwk, 'AES-GCM', true, ['encrypt', 'decrypt']);
     let ws = await session_connect(sid);
 
-    ws.onmessage = (ev) => {
+    ws.addEventListener('message', (ev) => {
+        navigator.locks.request('receive', async (lock) => {
+            let iv = await ev.data.slice(0, 12);
+            console.log('Message received');
 
-    };
+            let decrypted = new Blob([await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: await iv.arrayBuffer() },
+                key,
+                await ev.data.slice(12).arrayBuffer()
+            )]);
+
+            let packetType = await decrypted.slice(0, 1).text();
+            console.log(packetType);
+
+            switch (packetType) {
+                case '0':
+                    {
+                        let metadata = JSON.parse(await decrypted.slice(1).text());
+
+                        const root = await navigator.storage.getDirectory();
+                        const fileHandle = await root.getFileHandle(metadata.fileUUID, { create: true });
+
+                        let fileInfo = {
+                            metadata: metadata,
+                            fileHandle: fileHandle,
+                            chunksReceived: 0
+                        };
+                        downloads.set(
+                            metadata.fileUUID,
+                            fileInfo
+                        );
+                    }
+                    break;
+                case '1':
+                    {
+                        let fileUUID = await decrypted.slice(1, 37).text();
+                        let offset = new DataView(await decrypted.slice(37, 45).arrayBuffer()).getBigInt64(0, true);
+                        console.log(fileUUID);
+                        console.log(offset);
+                        let fileInfo = downloads.get(fileUUID);
+                        let writable = await fileInfo.fileHandle.createWritable({ keepExistingData: true });
+                        await writable.seek(Number(offset));
+                        await writable.write(decrypted.slice(45));
+                        await writable.close();
+
+                        fileInfo.chunksReceived++;
+                        if (fileInfo.chunksReceived == Math.ceil(fileInfo.metadata.size / chunkSize)) {
+                            let a = document.createElement('a');
+                            let url = URL.createObjectURL(await fileInfo.fileHandle.getFile());
+                            a.href = url;
+                            a.download = fileInfo.metadata.name;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+    });
 }
 
 async function main() {
