@@ -3,6 +3,7 @@ const backendURL = `http://${backendHost}`;
 const chunkSize = 134217728; // 128 MiB
 
 const downloads = new Map();
+let completed = new Array();
 
 // Opens a session with the backend server
 // Opens a websocket to send file data through
@@ -154,6 +155,13 @@ async function receiver() {
                     break;
                 case '1':
                     {
+                        let c = completed.pop()
+                        while (c != undefined) {
+                            const root = await navigator.storage.getDirectory();
+                            root.removeEntry(c);
+                            c = completed.pop();
+                        }
+
                         let fileUUID = await decrypted.slice(1, 37).text();
                         let offset = new DataView(await decrypted.slice(37, 45).arrayBuffer()).getBigInt64(0, true);
                         console.log(fileUUID);
@@ -171,7 +179,9 @@ async function receiver() {
                             a.href = url;
                             a.download = fileInfo.metadata.name;
                             a.click();
+                            a.remove();
                             URL.revokeObjectURL(url);
+                            completed.push(fileUUID);
                         }
                     }
                     break;
