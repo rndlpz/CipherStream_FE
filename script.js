@@ -52,11 +52,11 @@ uploadBtn.addEventListener('click', function(e) {//gets file input
 });
 
 
-// //displays files
-// fileInput.addEventListener('change', function() {
-//   var files = fileInput.files;//gets files from input
-//   displayFiles(files);//runs displayFiles function
-// });
+//displays files
+fileInput.addEventListener('change', function() {
+  var files = fileInput.files;//gets files from input
+  displayFiles(files);//runs displayFiles function
+});
 
 
 //copies link when clicked on
@@ -95,3 +95,10 @@ function displayFiles(files) {
   fileNamePrint.textContent += fileNames;
   // Perform actions with the selected file(s) here
 }
+
+// function displayFileName() {
+//   var fileInput = document.getElementById('file-input');
+//   var fileNameElement = document.getElementById('file-name');
+  
+//   fileNameElement.innerText = fileInput.files[0].name;
+// }
