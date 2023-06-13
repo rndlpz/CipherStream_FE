@@ -7,24 +7,24 @@
 </head>
 <body>
   <div id="dropzone">
-    <h1 class = "maintitle">CIPHERSTREAM</h1>
-    <h3>Drag and drop files here</h3>
-    <h4>or</h4>
-    <label for="file-input" id="upload-btn">Click here to upload</label>
-    <p>----------------------</p>
-    <h5>Encryption is added for your safety. You're welcome.</h5>
-    <h5>Click the file on the other end.</h5>
-    <h5>It's that simple.</h5>
-    <p>----------------------</p>
-    <p id="file-name">File name here</p>
+    <label for="file-input" class="upload-btn"></label>
+    <div class = pageTitle>
+      <h1 class = "maintitle">CIPHERSTREAM</h1>
+    </div>
+    <div class = pageDesc>
+      <h5><u>Quick</u> and <u>Easy</u> File Transfer with <i>Encryption</i></h5>
+    </div>
 
+    <div class = desc>
+      <p>----------------------------------------------------------------</p>
+      <h5>1. Upload a file by dragging and dropping in dotted area OR click to choose a file.</h5>
+      <h5>2. Copy Current URL.</h5>
+      <h5>3. Send and paste URL on receiving end to download.</h5>
+      <p>----------------------------------------------------------------</p>
+    </div>
+
+    <img src="fileIcon.png" width = 70 class = "icon">
     <input type="file" id="file-input" multiple>
-  </div>
-  <div id = "link-box">
-    <p>Link:<a id="linkToShare"></a>Copy link</p>
-  </div>
-  <div id = receiveCt>
-    <p>Received: </p>
   </div>
 </body>
 </html>

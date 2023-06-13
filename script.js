@@ -3,11 +3,11 @@ var fileInput = document.getElementById('file-input');
 var uploadBtn = document.getElementById('upload-btn');
 var fileName = document.getElementById('file-name');
 var linkElement = document.getElementById('linkToShare');
+var zoneElement = document.getElementById('desc');
 
 //updating link
 var currentURL = window.location.href;
 linkElement.href = currentURL;
-
 
 //changing file input to uploaded files
 fileInput.addEventListener("change", function(e) {
@@ -51,11 +51,10 @@ uploadBtn.addEventListener('click', function(e) {//gets file input
   fileInput.click();
 });
 
-
 //displays files
 fileInput.addEventListener('change', function() {
   var files = fileInput.files;//gets files from input
-  displayFiles(files);//runs displayFiles function
+  fileSelected(files);//runs displayFiles function
 });
 
 
@@ -79,7 +78,7 @@ linkElement.addEventListener("click", function(e) {
     document.body.removeChild(input);
 
     // Optionally provide feedback to the user
-    alert("Link copied to clipboard: " + link);
+    window.alert("Link copied to clipboard: " + link);
 });
 
 
@@ -91,10 +90,36 @@ function displayFiles(files) {
     fileNames += file.name + ', ';
   }
   fileNames.textContent = 'Selected files: ' + fileNames.slice(0, -2);
-  var fileNamePrint = document.getElementById("file-name")
+  // var fileNamePrint = document.getElementById("file-name")
   fileNamePrint.textContent += fileNames;
-  // Perform actions with the selected file(s) here
+  fileInput.innerHTML = fileNamePrint.textContent;
 }
+
+function fileSelected(e){
+  let fileTitle = fileInput.files[fileInput.files.length - 1];
+  uploadBtn.innerHtml = fileTitle.name;
+}
+
+var counterContainer = document.querySelector(".website-counter");
+var resetButton = document.querySelector("#reset");
+var visitCount = localStorage.getItem("page_view");
+
+// Check if page_view entry is present
+if (visitCount) {
+  visitCount = Number(visitCount) + 1;
+  localStorage.setItem("page_view", visitCount);
+} else {
+  visitCount = 1;
+  localStorage.setItem("page_view", 1);
+}
+counterContainer.innerHTML = visitCount;
+
+// Adding onClick event listener
+resetButton.addEventListener("click", () => {
+  visitCount = 1;
+  localStorage.setItem("page_view", 1);
+  counterContainer.innerHTML = visitCount;
+});
 
 // function displayFileName() {
 //   var fileInput = document.getElementById('file-input');
