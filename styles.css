@@ -7,6 +7,10 @@ body{
   background: -moz-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: -webkit-linear-gradient(top, #B89A42 0%, #E6C153 100%);
   background: linear-gradient(to bottom, #B89A42 0%, #E6C153 100%);
+  height: 100%;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .maintitle{
@@ -94,8 +98,6 @@ input{
 .upload-btn {
   position:relative;
   padding: 700px 710px;
-  background-color: #B89A42;
-  color: #fff;
   border: none;
   cursor: pointer;
   z-index: 1;
